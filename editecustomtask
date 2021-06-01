@@ -1,0 +1,41 @@
+importClass(org.apache.log4j.Logger);
+importClass(java.lang.StringBuffer);
+importClass(com.cloupia.model.cIM.VMWareHostNodeIdentity);
+
+function log(str) {
+    var l = Logger.getLogger("m");
+    l.info(str);
+}
+
+var inputHostOrCluster = input.selectHostOrCluster;
+var inputhostNodeIdentity = input.hostNodeIdentity;
+
+log("Input Identity: " + inputhostNodeIdentity);
+
+if(inputHostOrCluster != null && inputHostOrCluster.equalsIgnoreCase("Cluster"))
+{
+	output.OUTPUT_HOSTNODE_IDENTITY = inputhostNodeIdentity;
+} else 
+{  
+	if(inputhostNodeIdentity.contains(",")) {
+		var outputBuffer = new StringBuffer();
+		for (var i=0; i < inputhostNodeIdentity.split(",").length;i++) {
+			var singlehost = inputhostNodeIdentity.split(",")[i];
+			var identity = new VMWareHostNodeIdentity(singlehost.split("@")[1],singlehost.split("@")[0]);
+			if(identity != null) { 
+				if(outputBuffer == null || outputBuffer.length() == 0) {
+					outputBuffer.append(identity.getIdentityKey());
+				} else {
+					outputBuffer.append(",").append(identity.getIdentityKey());
+				}
+			}
+		}
+		output.OUTPUT_HOSTNODE_IDENTITY = outputBuffer.toString();
+	}
+	else {
+		var identity = new VMWareHostNodeIdentity(inputhostNodeIdentity.split("@")[1],inputhostNodeIdentity.split("@")[0]);
+		if(identity != null) { 
+			output.OUTPUT_HOSTNODE_IDENTITY = identity.getIdentityKey();
+		}
+	}
+}
