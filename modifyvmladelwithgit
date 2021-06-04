@@ -1,0 +1,42 @@
+loadLibrary("JSON-JS-Module/JSON-JS-ModuleLibrary");
+
+var vm = input.vmid;
+var label = input.vmlabel;
+
+function modifyVMLabel(){
+		var opName = "userAPISetVMProperties";
+
+		logger.addInfo("VM Id: "+vm);
+
+		var payload = {};
+		payload.param0 = vm;
+		payload.param1 = label;
+
+		var jsonInString = JSON2.stringify(payload);
+
+		logger.addInfo(jsonInString);
+
+		resultObj = executeJSONAPI(opName,jsonInString);
+
+		if(resultObj.serviceResult == true){
+
+		logger.addInfo("VM Label updated " + label +" for vm " + vm);
+
+		}
+		else{
+
+		logger.addError("Task Failed. Provide Correct details");
+		ctxt.setFailed("Task failed to to modify VM label");
+		ctxt.exit();
+		}
+}
+function executeJSONAPI(opName, jsonInString){
+		var result = ctxt.getAPI().performOperationOnJSONPayload(opName,jsonInString);
+
+		logger.addInfo(result);
+
+		var resultObj = JSON2.parse(result);
+
+		return resultObj;
+}
+modifyVMLabel();
