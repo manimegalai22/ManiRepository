@@ -1,2 +1,3 @@
-hi
-test
+logger.addInfo("inside the cloupiascript file");
+logger.addInfo("welcome to script...." );
+logger.addinfo("Example for github token key auhentication")
